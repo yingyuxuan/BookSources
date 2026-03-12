@@ -1,90 +1,105 @@
-const search = (key, page) => {
-    let response = GET(`https://www.wenku8.net/modules/article/search.php?searchtype=articlename&searchkey=${ENCODE(key, "gbk")}&page=${page + 1}`)
-    let $ = HTML2.parse(response)
-    let array = []
-    if($("title").text() === `${key}搜索结果 - 轻小说文库`) {
-        $('td > div').forEach((child) => {
-            array.push({
-                name: child.st('b > a').attr("title"),
-                author: child.st('p:nth-child(2)').text().replace("作者:","").replace(/\/分类:.+/,""),
-                cover: child.st('img').attr('src'),
-                summary: child.st('p:nth-child(5)').text().replace("简介:",""),
-                status: child.st('p:nth-child(3)').text().replace(/更新:.+\//,""),
-                words: child.st('p:nth-child(3)').text().replace(/更新:.+\/字数:/,"").replace(/\/.+/,""),
-                category: child.st('p:nth-child(2)').text().replace(/作者:.+\/分类:/,""),
-                tags: child.st('p:nth-child(4)').text().replace("Tags:","").split(" "),
-                update: child.st('p:nth-child(3)').text().replace("更新:","").replace(/\/字数:.+/,""),
-                detail: `https://www.wenku8.net${child.st('b > a').attr('href')}`
-            })
-        })
-    } else {
-        array.push({
-            name: $('td > table > tbody > tr > td:nth-child(1) > span > b').text(),
-            author: $("table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").text().replace("小说作者：", ""),
-            cover: $('td > img').attr('src'),
-            summary: $('td > span:nth-child(13)').text(),
-            status: $("table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(3)").text().replace("文章状态：", ""),
-            words: $("table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(5)").text().replace("全文长度：", ""),
-            category: $("table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1)").text().replace("文库分类：", ""),
-            tags: $("span.hottext:nth-child(1) > b:nth-child(1)").text().replace("作品Tags：","").split(" "),
-            update: $("table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(4)").text().replace("最后更新：", ""),
-            lastChapter: $("td > span:nth-child(8)").text(),
-            detail: `https://www.wenku8.net/book/${$('span:nth-child(2) > fieldset > div > a').attr('href').replace(/.+bid=/,"")}.htm`
-        })
-    }
-    return JSON.stringify(array)
+{
+	"name":"轻小说文库",
+	"url":"www.wenku8.net",
+	"version":100,
+	"search":{
+		"url":"http://www.wenku8.net/modules/article/search.php?searchtype=articlename&searchkey=${key}@header->cookie:PHPSESSID=2db082ebcffb37bd9723567033d6d91e",
+		"charset":"gbk",
+		"list": "#centerm > tale >tbody > tr > td > div",
+		"name": "b",
+		"detail": "a",
+		"author": "div:nth-child(2) > p:nth-child(1)@match->(?<=作者:)(.+)(?=/分类)",
+		"cover": "img",
+		"summary": ""
+	},	
+	"detail":{
+		"name":"td > table > tbody > tr > td:nth-child(1) > span > b",
+		"category":"#content > div > table > tbody > tr:nth-child(2) > td:nth-child(1)@match->(?<=文库分类：)(.+)",
+		"author":"#content > div > table > tbody > tr:nth-child(2) > td:nth-child(2)@match->(?<=小说作者：)(.+)",
+		"status":"#content > div > table > tbody > tr:nth-child(2) > td:nth-child(3)",
+		"update":"#content > div > table > tbody > tr:nth-child(2) > td:nth-child(4)@match->(?<=：)(.+)",
+		"words":"#content > div > table > tbody > tr:nth-child(2) > td:nth-child(5)@match->(?<=：)(.+?)(?=字)",
+		"cover":"#content > div > table:nth-child(2) > tbody > tr > td > img",
+		"lastChapter":"#content > div > table:nth-child(2) > tbody > tr > td:nth-child(2) > span:nth-child(4) > a",
+		"summary":"#content > div > table:nth-child(2) > tbody > tr > td:nth-child(2)@match->(?<=内容简介：)(.+)",
+		"catalog":"#content > div > div:nth-child(4) > div > span > fieldset > div > a",
+	},	
+	"catalog":{
+		"list":"table > tbody > tr > td > a",
+		"orderBy":0,
+		"name":"a",
+		"chapter":"a",
+		"booklet":{
+			"name":"",
+			"list":""
+		},
+		"page":"",	
+	},
+	"chapter":{
+		"content":"#content",
+		"filter":[],
+		"purify":[],
+		"page":"",
+		"buy":"",
+		"subscribe":"",
+		"vip":""
+	},
+	"rank":[
+		{	"title":"排行榜",
+			"url":"https://www.wenku8.net/modules/article/toplist.php?sort=${key}&page=${page}",
+			"page":1,
+			"size":20,
+			"categories":[
+				{"key":"allvisit","value":"总排行榜"},{"key":"monthvisit","value":"月排行榜"},
+				{"key":"weekvisit","value":"周排行榜"},{"key":"dayvisit","value":"日排行榜"},
+				{"key":"allvote","value":"总推荐榜"},{"key":"monthvote","value":"月推荐榜"},
+				{"key":"weekvote","value":"周推荐榜"},{"key":"dayvote","value":"日推荐榜"},
+				{"key":"anime","value":"动画化排行"},{"key":"postdate","value":"最新入库"},
+				{"key":"lastupdate","value":"最近更新"},{"key":"goodnum","value":"总收藏榜"},
+				{"key":"size","value":"字数排行"}
+			],
+			"author":"",
+			"cover":"",
+			"detail":"",
+			"list":"",
+			"name":"",
+			"summary":"",
+			"unit":1,
+		},
+		{	"title":"文库分类",
+			"url":"https://www.wenku8.net/modules/article/articlelist.php?class=${key}&page=${page}",
+			"page":1,
+			"size":20,
+			"categories":[
+				{"key":"","value":"全部轻小说"},{"key":"1","value":"电击·文库"},
+				{"key":"2","value":"富士·见库"},{"key":"3","value":"角川·文库"},
+				{"key":"4","value":"MFJ·文库"},{"key":"5","value":"FAMI·通文"},
+				{"key":"6","value":"G A·文库"},{"key":"7","value":"H J·文库"},
+				{"key":"8","value":"壹迅·文库"},{"key":"9","value":"集英·文库"},
+				{"key":"10","value":"小学馆"},{"key":"11","value":"讲谈社"},
+				{"key":"12","value":"少女文库"},{"key":"13","value":"其他文库"},
+				{"key":"14","value":"游戏剧本"}
+			],
+			"author":"",
+			"cover":"",
+			"detail":"",
+			"list":"",
+			"name":"",
+			"summary":"",
+			"unit":1,
+		},
+		{	"title":"完结全本",
+			"url":"https://www.wenku8.net/modules/article/articlelist.php?fullflag=1&page=${page}",
+			"page":1,
+			"size":20,
+			"categories":[],
+			"author":"",
+			"cover":"",
+			"detail":"",
+			"list":"",
+			"name":"",
+			"summary":"",
+			"unit":1,	
+		}
+	],
 }
-
-const detail = (url) => {
-    let response = GET(url)
-    let $ = HTML2.parse(response)
-    let book = {
-        name: $('td > table > tbody > tr > td:nth-child(1) > span > b').text(),
-        author: $("table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").text().replace("小说作者：", ""),
-        cover: $('td > img').attr('src'),
-        summary: $('td > span:nth-child(13)').text(),
-        status: $("table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(3)").text().replace("文章状态：", ""),
-        words: $("table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(5)").text().replace("全文长度：", ""),
-        category: $("table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1)").text().replace("文库分类：", ""),
-        tags: $("span.hottext:nth-child(1) > b:nth-child(1)").text().replace("作品Tags：","").split(" "),
-        update: $("table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(4)").text().replace("最后更新：", ""),
-        lastChapter: $("td > span:nth-child(8)").text(),
-        catalog: `https://www.wenku8.net${$('span:nth-child(1) > fieldset > div > a').attr('href')}`
-    }
-    return JSON.stringify(book)
-}
-
-const catalog = (url) => {
-    let response = GET(url)
-    let $ = HTML2.parse(response)
-    let array = []
-    for(let chapter of $("td").toList()) {
-        if(chapter.st("td").text() === "") {
-            continue
-        }
-        if(chapter.st("td").attr("class") === "vcss") {
-            array.push({
-                name: chapter.st("td").text(),
-                volume: true
-            })
-       } else array.push({
-           name: chapter.st("td").text(),
-           url: url.replace("index.htm", chapter.st("td > a").attr("href"))
-       })
-    }
-    return JSON.stringify(array)
-}
-
-const chapter = (url) => {
-    let response = GET(url)
-    let $ = HTML.parse(response)
-    return $("#content").remove("ul")
-}
-
-var bookSource = JSON.stringify({
-    name: "轻小说文库",
-    url: "wenku8.net",
-    version: 100,
-    authorization: "https://www.wenku8.net/login.php",
-    cookies: [".wenku8.net"]
-})
