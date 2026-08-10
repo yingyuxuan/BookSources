@@ -3,8 +3,12 @@
     "url": "qidian.com",
     "version": 112
   },
-  { 
+  {
     "url": "biquge2345.com",
-    "version": 100 
+    "version": 100
+  },
+  {
+    "url": "biqugere.net",
+    "version": 100
   }
 ]
