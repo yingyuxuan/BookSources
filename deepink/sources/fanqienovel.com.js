@@ -31,5 +31,5 @@ const detail = (url) => {
 var bookSource = JSON.stringify({
   name: "番茄小说",
   url: "fanqienovel.com",
-  version: 107
+  version: 100
 })
