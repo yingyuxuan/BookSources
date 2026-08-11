@@ -35,5 +35,5 @@ const detail = (url) => {
 var bookSource = JSON.stringify({
   name: "起点中文网",
   url: "qidian.com",
-  version: 112
+  version: 100
 })
