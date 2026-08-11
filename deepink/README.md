@@ -5,6 +5,7 @@
 ---
 
 目前支持如下：
+
 聚合源格式（可登录）
 - [x] 起点中文网 [qidian.com](https://qidian.com)
 - [x] 飞卢 [faloo.com](https://faloo.com)
@@ -12,6 +13,7 @@
 - [x] 掌阅小说 [zhangyue.com](https://m.zhangyue.com)
 - [x] 轻小说文库 [wenku8.netl.com](https://www.wenku8.net)
 - [x] 多看阅读 [duokan.com](https://www.duokan.com)
+
 远程库格式
 - [x] 笔趣阁儿 [biquger.com](https://biquger.com)
 - [x] 平凡文学 [m.pksge.la](https://m.pksge.la)
