@@ -1,0 +1,7 @@
+{
+    "catalog":{"chapter":"a","list":".list_box > ul > li","name":"a","orderBy":0,"page":""},
+    "chapter":{"buy":"","content":".box_box","filter":["@div"],"page":"","purify":[],"subscribe":"","vip":""},
+    "detail":{"author":"","catalog":"","category":"","cover":"","lastChapter":"","name":"","status":"","summary":"","update":"","words":""},
+    "search":{"author":"","charset":"UTF-8","cover":"","detail":"a","list":"li","name":"a","summary":"","url":"http://www.yunxs.com/plus/search.php?kwtype=0&searchtype=&q=${key}"},
+    "name":"云中书库","url":"yunxs.com","version":100
+}

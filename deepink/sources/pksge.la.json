@@ -1,0 +1,7 @@
+{
+    "catalog":{"chapter":"a","list":".zhangjiekaishi > ul > li","name":"a","orderBy":0,"page":""},
+    "chapter":{"buy":"","content":"#booktext","filter":[],"page":"","purify":["★★平凡文学★★.+请把本站网址推荐给您的朋友吧！"],"subscribe":"","vip":""},
+    "detail":{"author":"","catalog":"","category":"","cover":"","lastChapter":"","name":"","status":"","summary":"","update":"","words":""},
+    "search":{"author":"h3@match->(?<=作者：).+","charset":"utf-8","cover":".tutuiImg > a > img","detail":"h2 > a","list":".tutui","name":"h2 > a","summary":"","url":"http://www.pksge.la/modules/article/search.php?searchkey=${key}&searchtype=articlename"},
+    "name":"平凡文学","url":"http://www.pksge.la","version":100
+}
