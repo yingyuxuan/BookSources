@@ -1,22 +1,30 @@
 [
   {
     "url": "qidian.com",
-    "version": 112
+    "version": 100
   },
   {
     "url": "zhangyue.com",
-    "version": 104
+    "version": 100
   },
   {
     "url": "faloo.com",
-    "version": 105
+    "version": 100
   },
   {
     "url": "fanqienovel.com",
-    "version": 107
+    "version": 100
   },
   {
     "url": "wenku8.net",
     "version": 100
   },
+  {
+    "url": "druidv6.if.qidian.com",
+    "version": 100
+  },
+  {
+    "url": "www.duokan.com",
+    "version": 100
+  }
 ]
