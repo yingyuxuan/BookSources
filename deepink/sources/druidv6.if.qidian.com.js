@@ -16,6 +16,15 @@
 
 require('crypto-js')
 
+var bookSource = JSON.stringify({
+  name: "if.起点中文网",
+  url: "druidv6.if.qidian.com",
+  version: 100,
+  authorization: "https://passport.yuewen.com/yuewen.html?appid=13&areaid=31",
+  cookies: [".qidian.com"],
+  ranks: ranks
+})
+
 // 转换更新时间 时间戳
 function timestampToTime(timestamp) {
   if (timestamp.toString().length == 13) var date = new Date(timestamp);
@@ -468,12 +477,3 @@ const ranks = [
     ]
   }
 ]
-
-var bookSource = JSON.stringify({
-  name: "起点中文网",
-  url: "druidv6.if.qidian.com",
-  version: 100,
-  authorization: "https://passport.yuewen.com/yuewen.html?appid=13&areaid=31",
-  cookies: [".qidian.com"],
-  ranks: ranks
-})
