@@ -70,6 +70,7 @@ const detail = (url) => {
         words: words,
         update: '',
         lastChapter: lastChapter,
+        cover: meta($, 'meta[property="og:image"]'),
         catalog: catalog
     });
 };
