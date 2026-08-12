@@ -11,6 +11,12 @@
 
 const baseUrl = "http://www.biqugere.net"
 
+var bookSource = JSON.stringify({
+  name: "碧曲书库",
+  url: "biqugere.net",
+  version: 100
+})
+
 //搜索（GET searchkey，正则提取行，避免 jsoup 片段解析）
 const search = (key) => {
   let response = GET(`${baseUrl}/modules/article/search.php?searchkey=${encodeURI(key)}`)
@@ -55,7 +61,7 @@ const detail = (url) => {
 //目录（详情页即完整目录，只取 #list 内 <dl> 的章节链接，正序无需反转）
 const catalog = (url) => {
   let $ = HTML.parse(GET(url))
-  let items = $('#list dl dd a')
+  let items = $('div[id=list] dl dd a')
   if (typeof items === 'string') items = [items]
   let array = []
   items.forEach((item) => {
@@ -84,9 +90,3 @@ const chapter = (url) => {
   content = content.replace(/\n{3,}/g, '\n\n')
   return content.trim()
 }
-
-var bookSource = JSON.stringify({
-  name: "碧曲书库",
-  url: "biqugere.net",
-  version: 100
-})
