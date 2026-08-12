@@ -6,11 +6,6 @@
  *  - 详情：og meta 齐全（status/update_time/latest_chapter_name/category）
  *  - 目录：详情页 <div id="list"> 内 <dl><dd><a href="/biquge/{bid}/{cid}" title="章名">，正序
  *  - 正文：<div class="content" id="booktext">，<br /> 分段
- * v103：搜索改用正则提取行（jsoup 对独立 <tr> 片段会丢弃，HTML.parse(row) 选择器失效）
- * v104：修复目录获取失败 — 页面有2个 id="list"，jsoup getElementById 只取第一个空div，
- *       改用属性选择器 div[id=list] 绕过 ID 快捷路径
- * v106：修复封面 — 新增 cover 字段到 detail 返回值，优先取 #fmimg img.attr('src')，
- *       回退 og:image meta.attr('content')
  */
 
 const baseUrl = "http://www.biqugere.net"
