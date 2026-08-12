@@ -7,6 +7,10 @@
  *  - 目录：详情页 <div id="list"> 内 <dl><dd><a href="/biquge/{bid}/{cid}" title="章名">，正序
  *  - 正文：<div class="content" id="booktext">，<br /> 分段
  * v103：搜索改用正则提取行（jsoup 对独立 <tr> 片段会丢弃，HTML.parse(row) 选择器失效）
+ * v104：修复目录获取失败 — 页面有2个 id="list"，jsoup getElementById 只取第一个空div，
+ *       改用属性选择器 div[id=list] 绕过 ID 快捷路径
+ * v106：修复封面 — 新增 cover 字段到 detail 返回值，优先取 #fmimg img.attr('src')，
+ *       回退 og:image meta.attr('content')
  */
 
 const baseUrl = "http://www.biqugere.net"
@@ -14,7 +18,7 @@ const baseUrl = "http://www.biqugere.net"
 var bookSource = JSON.stringify({
   name: "碧曲书库",
   url: "biqugere.net",
-  version: 100
+  version: 101
 })
 
 //搜索（GET searchkey，正则提取行，避免 jsoup 片段解析）
@@ -46,20 +50,22 @@ const search = (key) => {
 //详情
 const detail = (url) => {
   let $ = HTML.parse(GET(url))
-  let book = {
+  var cover = $('#fmimg img').attr('src') || $('meta[property="og:image"]').attr('content') || ''
+  return JSON.stringify({
     summary: $('meta[property="og:description"]').attr('content'),
     status: $('meta[property="og:novel:status"]').attr('content'),
     category: $('meta[property="og:novel:category"]').attr('content'),
     words: '',
     update: $('meta[property="og:novel:update_time"]').attr('content'),
     lastChapter: $('meta[property="og:novel:latest_chapter_name"]').attr('content'),
-    cover: $('meta[property="og:image"]').attr('content'),
+    cover: cover,
     catalog: url
-  }
-  return JSON.stringify(book)
+  })
 }
 
 //目录（详情页即完整目录，只取 #list 内 <dl> 的章节链接，正序无需反转）
+// 注意：页面有2个 id="list"，jsoup 的 getElementById 只取第一个（空div），
+// 必须用属性选择器 div[id=list] 避免 ID 快捷路径，正确匹配第二个含章节的 div
 const catalog = (url) => {
   let $ = HTML.parse(GET(url))
   let items = $('div[id=list] dl dd a')
@@ -91,3 +97,4 @@ const chapter = (url) => {
   content = content.replace(/\n{3,}/g, '\n\n')
   return content.trim()
 }
+
