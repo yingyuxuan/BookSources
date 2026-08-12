@@ -1,5 +1,5 @@
 var bookSource = JSON.stringify({
-    name: "平凡文学",
+    name: "平凡文学网",
     url: "www.xsbook.cc",
     version: 100
 });
