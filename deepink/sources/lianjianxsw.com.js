@@ -40,6 +40,7 @@ const detail = (url) => {
     category: $.type,
     update: $.updatetime,
     lastChapter: $.last_chapter_name,
+    cover: `http://www.lianjianxsw.com/pic/${$._id}.jpg`,
     catalog: $._id
   }
   return JSON.stringify(book)
