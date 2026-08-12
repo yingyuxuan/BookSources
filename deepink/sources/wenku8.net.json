@@ -178,7 +178,7 @@
         "list": "#content > table > tbody > tr > td > div",
         "name": "b",
         "summary": "",
-        "url": "https://www.wenku8.net/modules/article/search.php?searchtype=articlename&searchkey=${key}@header->cookie:PHPSESSID=qn911o0bbn63oknl5jem04i5oedo0vth"
+        "url": "https://www.wenku8.net/modules/article/search.php?searchtype=articlename&searchkey=${key}@header->cookie:PHPSESSID=f3771ad1d5a6de1831d696be31cf65a3"
     },
     "url": "wenku8.com",
     "version": 103
