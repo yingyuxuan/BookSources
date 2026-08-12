@@ -1,7 +1,0 @@
-{
-    "catalog":{"chapter":"a","list":"#list > dl > dd","name":"a","orderBy":0,"page":""},
-    "chapter":{"content":"#booktext","filter":["@center"],"page":"","purify":[]},
-    "detail":{"author":"meta[property=og:novel:author]@attr->content","catalog":"","category":"","cover":"meta[property=og:image]@attr->content","lastChapter":"meta[property=og:novel:latest_chapter_name]@attr->content","name":"meta[property=og:novel:book_name]@attr->content","status":"meta[property=og:novel:status]@attr->content","summary":"#list > p","update":"meta[property=og:novel:update_time]@attr->content","words":""},
-    "search":{"author":"td:nth-child(3)","charset":"utf-8","cover":"","detail":"td.odd>a","list":"tbody>tr:nth-child(n+2)","name":"td.odd>a","summary":"","url":"http://www.biquger.com/modules/article/search.php?searchkey=${key}"},
-    "name":"笔趣阁儿","url":"www.biquger.com","version":101
-}
