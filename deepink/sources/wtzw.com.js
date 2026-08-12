@@ -62,6 +62,7 @@ category: $.book_tag_list.map((item)=>{ return item.title}).join(" "),
 words: $.category_over_words.match(/\d{1,}万/)[0],
 update: timestampToTime($.update_time),
 lastChapter: $.latest_chapter_title,
+cover: $.image_link || '',
 catalog: $.id
 }
 return JSON.stringify(book)
