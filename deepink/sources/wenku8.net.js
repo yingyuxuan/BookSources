@@ -16,15 +16,6 @@ const baseUrl = "https://www.wenku8.net"
 // .st(selector) 等价于 HTML.parse(this)(selector)，通过 SELECT 返回子元素
 String.prototype.st = function(query) { return HTML.parse(this)(query) }
 
-var bookSource = JSON.stringify({
-  name: "轻小说文库",
-  url: "wenku8.net",
-  version: 100,
-  authorization: "https://www.wenku8.net/login.php",
-  cookies: [".wenku8.net"],
-  ranks: ranks
-})
-
 // ── 搜索 ──
 const search = (key, page) => {
   let response = GET(`${baseUrl}/modules/article/search.php?searchtype=articlename&searchkey=${ENCODE(key, "gbk")}&page=${page + 1}`)
@@ -203,3 +194,12 @@ const rank = (title, cat, page) => {
   let hasNext = $("a.ngroup") ? true : false
   return JSON.stringify({ end: !hasNext, books: array })
 }
+
+var bookSource = JSON.stringify({
+  name: "轻小说文库",
+  url: "wenku8.net",
+  version: 100,
+  authorization: "https://www.wenku8.net/login.php",
+  cookies: [".wenku8.net"],
+  ranks: rank
+})
