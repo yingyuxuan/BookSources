@@ -61,6 +61,7 @@ const detail = (url) => {
       lastChapter = latestItems[0].text()
     }
   }
+  let cover = $('meta[property="og:image"]').attr('content') || ''
   let book = {
     summary: summary.trim(),
     status: status,
@@ -68,6 +69,7 @@ const detail = (url) => {
     words: '',
     update: updateTime,
     lastChapter: lastChapter,
+    cover: cover,
     catalog: url
   }
   return JSON.stringify(book)
