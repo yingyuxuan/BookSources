@@ -22,21 +22,22 @@ const search = (key) => {
 
 /**
  * 蚂蚁文学 — 详情
- * @params {string} url
- * @returns {[{summary, status, category, words, update, lastChapter, catalog}]}
  */
 const detail = (url) => {
     let response = GET(url)
     let $ = HTML.parse(response)
-    let book = {
-        summary: $("#inf").text().replace("简介： ",""),
-        status: $('.info_t3').text().replace("状态：",""),
-        category: $('.info_t2').text().replace("类别：",""),
-        update: $(".info_t5").text().replace("更新：",""),
-        lastChapter: $(".info_t6 > a").text(),
-        catalog: `${url.replace("m","www")}index.html`
-    }
-    return JSON.stringify(book)
+    // 从 URL 提取 bid：/book_12345/ → 12345
+    var bid = (url.match(/_(\d+)/) || [])[1] || ''
+    return JSON.stringify({
+        summary: ($('#inf')[0] || {text:function(){return ''}}).text().replace('简介： ',''),
+        status: ($('.info_t3')[0] || {text:function(){return ''}}).text().replace('状态：',''),
+        category: ($('.info_t2')[0] || {text:function(){return ''}}).text().replace('类别：',''),
+        words: '',
+        update: ($('.info_t5')[0] || {text:function(){return ''}}).text().replace('更新：',''),
+        lastChapter: ($('.info_t6 > a')[0] || {text:function(){return ''}}).text(),
+        cover: bid ? `https://m.mayiwsk.com/files/article/image/${parseInt(Number(bid)/1000)}/${bid}/${bid}s.jpg` : '',
+        catalog: url.replace('m','www') + 'index.html'
+    })
 }
 
 /**
