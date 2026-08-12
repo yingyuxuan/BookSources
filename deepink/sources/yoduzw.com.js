@@ -1,14 +1,14 @@
 // ==BookSource==
 // @name 有度中文网
 // @url www.yoduzw.com
-// @version 100
-// @description 有度中文网书源。站点使用自定义字体(read.ttf)对章节内容部分文字进行混淆，章节正文约20%字符为PUA编码，显示为乱码(无解)。
+// @version 101
+// @description 有度中文网书源。v101: 兼容网站搜索双模板(grid .g_book + list li#hism)；修复detail URL绝对路径；添加catalog字段。站点使用自定义字体(read.ttf)对章节内容部分文字进行混淆，章节正文约20%字符为PUA编码，显示为乱码(无解)。
 // ==/BookSource==
 
 var bookSource = JSON.stringify({
     name: "有度中文网",
     url: "www.yoduzw.com",
-    version: 100,
+    version: 101,
     authorization: "https://www.yoduzw.com/login.php"
 });
 
@@ -17,79 +17,100 @@ const BASE = "https://www.yoduzw.com";
 /**
  * 搜索书籍
  * POST https://www.yoduzw.com/sa  searchkey=关键词&searchtype=all
+ * v101: 网站搜索含两种模板 — grid(.g_book) 和 list(li[id=hism])，需同时兼容
  */
 function search(key) {
     const html = POST(BASE + "/sa", {
         data: "searchkey=" + ENCODE(key) + "&searchtype=all",
         headers: ["Content-Type:application/x-www-form-urlencoded"]
     });
-    if (!html) {
-        return JSON.stringify([]);
+    if (!html) return JSON.stringify([]);
+
+    // 模板A: grid 卡片 <li class="g_col_2"><div class="g_book">
+    let items = SELECT(html, ".g_book");
+    if (items && items.length > 0) {
+        return JSON.stringify(extractGrid(items));
     }
-    // 搜索结果li: <li class="pr pb20 mb20" id="hism">
-    const items = SELECT(html, "li[id=hism]");
+    // 模板B: list 列表 <li class="pr pb20 mb20" id="hism">
+    items = SELECT(html, "li[id=hism]");
+    if (items && items.length > 0) {
+        return JSON.stringify(extractList(items));
+    }
+    return JSON.stringify([]);
+}
+
+// 模板A: grid 卡片 → .g_book > a[title] + h3.g_h4 + span._type
+function extractGrid(items) {
     const results = [];
     for (let i = 0; i < items.length; i++) {
         const item = items[i];
-        // 书名链接 <h3><a href="/book/ID/?for-search" title="书名">
-        const titleLink = SELECT(item, "h3 a");
-        if (!titleLink || titleLink.length === 0) continue;
-        // 优先用 title 属性取书名
-        let name = ATTR(titleLink[0], "title") || "";
-        if (!name) name = TEXT(titleLink[0]).trim();
+        const aLinks = SELECT(item, "a[href]");
+        if (!aLinks || aLinks.length === 0) continue;
+        let href = ATTR(aLinks[0], "href") || "";
+        let name = ATTR(aLinks[0], "title") || "";
+        if (!name) {
+            const h3s = SELECT(item, "h3.g_h4");
+            if (h3s && h3s.length > 0) name = TEXT(h3s[0]).trim();
+        }
         if (!name) continue;
-        const href = ATTR(titleLink[0], "href") || "";
-        // 去除 ?for-search 后缀
-        const detailUrl = href.replace(/\?for-search/, "");
-        // 封面(可能没有，img 使用 _src 懒加载)
-        const coverImg = SELECT(item, "img[_src]");
+        let detailUrl = href;
+        if (detailUrl.indexOf("http") !== 0) detailUrl = BASE + detailUrl;
         let cover = "";
-        if (coverImg && coverImg.length > 0) {
-            cover = ATTR(coverImg[0], "_src") || "";
-            if (cover && cover.indexOf("http") !== 0) {
-                cover = BASE + cover;
-            }
+        const imgs = SELECT(item, "img[_src]");
+        if (imgs && imgs.length > 0) {
+            cover = ATTR(imgs[0], "_src") || "";
+            if (cover && cover.indexOf("http") !== 0) cover = BASE + cover;
         }
-        // 作者/分类 <em><span>分类</span>...<span>作者</span>
-        const allSpans = SELECT(item, "em span");
         let author = "";
-        let category = "";
-        if (allSpans && allSpans.length >= 2) {
-            category = TEXT(allSpans[0]).trim();
-            author = TEXT(allSpans[1]).trim();
-        }
-        // 简介 <p class="fs16 mb10 c_strong g_ells">
-        const descP = SELECT(item, "p.c_strong");
-        let summary = "";
-        if (descP && descP.length > 0) {
-            summary = TEXT(descP[0]).trim();
-        }
-        // 最新章节
-        const latestA = SELECT(item, "p.ell a");
-        let lastChapter = "";
-        if (latestA && latestA.length > 0) {
-            lastChapter = TEXT(latestA[0]).trim();
-        }
-        results.push({
-            name: name,
-            author: author,
-            cover: cover,
-            detail: detailUrl,
-            summary: summary,
-            category: category,
-            lastChapter: lastChapter
-        });
+        const typeSpans = SELECT(item, "span._type");
+        if (typeSpans && typeSpans.length > 0) author = TEXT(typeSpans[0]).trim();
+        results.push({ name: name, author: author, cover: cover, detail: detailUrl });
     }
-    return JSON.stringify(results.length > 0 ? results : []);
+    return results;
+}
+
+// 模板B: list 列表 → li#hism > h3 a.c_strong[title] + em.c_small span.vam[1]
+function extractList(items) {
+    const results = [];
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        // 书名: h3 > a.c_strong[title]
+        const titleLinks = SELECT(item, "h3 a.c_strong");
+        if (!titleLinks || titleLinks.length === 0) continue;
+        let name = ATTR(titleLinks[0], "title") || "";
+        if (!name) name = TEXT(titleLinks[0]).trim();
+        if (!name) continue;
+        let href = ATTR(titleLinks[0], "href") || "";
+        href = href.replace(/\?for-search/, "");
+        let detailUrl = href;
+        if (detailUrl.indexOf("http") !== 0) detailUrl = BASE + detailUrl;
+        // 封面: a.g_thumb > img[_src]
+        let cover = "";
+        const thumbs = SELECT(item, "a.g_thumb img[_src]");
+        if (thumbs && thumbs.length > 0) {
+            cover = ATTR(thumbs[0], "_src") || "";
+            if (cover && cover.indexOf("http") !== 0) cover = BASE + cover;
+        }
+        // 作者: em.c_small 中第2个 span.vam
+        let author = "";
+        const vamSpans = SELECT(item, "em.c_small span.vam");
+        if (vamSpans && vamSpans.length >= 2) author = TEXT(vamSpans[1]).trim();
+        results.push({ name: name, author: author, cover: cover, detail: detailUrl });
+    }
+    return results;
 }
 
 /**
  * 书籍详情
  * GET https://www.yoduzw.com/book/ID/
  * 优先使用 og:novel:* meta 标签
+ * v101: 添加 catalog 字段 + 绝对 URL 保护
  */
 function detail(url) {
-    const html = GET(url);
+    // 确保 URL 为绝对路径
+    let fullUrl = url;
+    if (fullUrl.indexOf("http") !== 0) fullUrl = BASE + fullUrl;
+    const html = GET(fullUrl);
     if (!html) return JSON.stringify(null);
 
     let name = "", author = "", cover = "", category = "", status = "",
@@ -155,13 +176,13 @@ function detail(url) {
         name: name,
         author: author,
         cover: cover,
-        detail: url,
         summary: summary,
         status: status,
         category: category,
         words: words,
         update: updateTime,
-        lastChapter: lastChapter
+        lastChapter: lastChapter,
+        catalog: fullUrl
     });
 }
 
