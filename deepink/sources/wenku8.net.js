@@ -4,9 +4,17 @@
  * 编码：GBK ｜ 需登录
  * 目录：table.css 表格，td.vcss=卷，td.ccss=章节(a)
  * 章节：div#content 内含 ul#contentdp 来源声明，正文 br 分段
+ * v101：添加 String.prototype.st 补丁 — QuickJS 引擎未注入此方法，
+ *       但书源搜/详/目/章/排行全部依赖 .st(selector) 做子元素选择
+ *       等价于 HTML.parse(this)(selector)
  */
 
 const baseUrl = "https://www.wenku8.net"
+
+// 引擎补丁：QuickJS 引擎未注入 String.prototype.st，
+// 但书源所有函数都依赖 .st(selector) 做子元素查询。
+// .st(selector) 等价于 HTML.parse(this)(selector)，通过 SELECT 返回子元素
+String.prototype.st = function(query) { return HTML.parse(this)(query) }
 
 // ── 搜索 ──
 const search = (key, page) => {
