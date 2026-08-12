@@ -53,6 +53,7 @@ const detail = (url) => {
     words: '',
     update: $('meta[property="og:novel:update_time"]').attr('content'),
     lastChapter: $('meta[property="og:novel:latest_chapter_name"]').attr('content'),
+    cover: $('meta[property="og:image"]').attr('content'),
     catalog: url
   }
   return JSON.stringify(book)
