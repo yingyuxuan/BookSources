@@ -86,6 +86,7 @@ const detail = (url) => {
         status: status,
         category: category,
         words: titleI ? TEXT(titleI) : '',
+        cover: imgEl ? ATTR(imgEl, 'src') : '',
         catalog: url
     };
 
